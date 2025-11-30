@@ -26,6 +26,6 @@ class Pengaduan extends Model
     }
     public function chat()
     {
-        return $this->hasMany(chat::class);
+        return $this->hasMany(Chat::class);
     }
 }
