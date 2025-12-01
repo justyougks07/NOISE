@@ -45,4 +45,16 @@ class PengaduanController extends Controller
 
         return response()->json(['message' => 'status diperbarui',]);
     }
+    public function show(Request $request, $id)
+{
+    $pengaduan = Pengaduan::with('chats.user')->findOrFail($id);
+
+    // akses kontrol: user hanya bisa lihat pengaduan sendiri
+    if ($request->user()->role === 'user' && $pengaduan->user_id !== $request->user()->id) {
+        return response()->json(['message' => 'Tidak punya akses'], 403);
+    }
+
+    return response()->json($pengaduan);
+}
+
 }
