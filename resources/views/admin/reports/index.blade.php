@@ -127,8 +127,3 @@
     </div>
 </div>
 @endsection
-    <div class="card-body">
-        <div class="text-muted">Halaman laporan placeholder — dapat diisi nanti dengan grafik dan export data.</div>
-    </div>
-</div>
-@endsection

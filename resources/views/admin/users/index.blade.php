@@ -60,8 +60,3 @@
     </div>
 </div>
 @endsection
-    <div class="card-body">
-        <div class="text-muted">Halaman daftar pengguna placeholder (fitur manajemen pengguna dapat dikembangkan kemudian).</div>
-    </div>
-</div>
-@endsection
