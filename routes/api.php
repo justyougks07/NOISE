@@ -23,6 +23,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/pengaduan/{id}/status',    [PengaduanController::class, 'updateStatus']); // update status (admin)
 
     // Chat - using pengaduan id in URL
-    Route::post('/pengaduan/{id}/chat',     [ChatController::class, 'send']); // send chat (user or admin)
-    Route::get('/pengaduan/{id}/chat',      [ChatController::class, 'list']); // list chats for pengaduan
+    Route::post('/pengaduan/{pengaduan_id}/chat',     [ChatController::class, 'send']); // send chat (user or admin)
+    Route::get('/pengaduan/{pengaduan_id}/chat',      [ChatController::class, 'list']); // list chats for pengaduan
 });
