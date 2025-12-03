@@ -109,7 +109,7 @@ Route::middleware('auth')->group(function() {
         
         $pengaduan = \App\Models\Pengaduan::where('user_id', $user->id)
             ->latest()
-            ->get();
+            ->paginate(10);
             
         return view('user.riwayat.index', compact('pengaduan'));
     })->name('riwayat.index');
@@ -120,7 +120,7 @@ Route::middleware('auth')->group(function() {
             $user = Auth::user();
             if ($user->role !== 'user') abort(403);
             
-            $pengaduan = \App\Models\Pengaduan::where('user_id', $user->id)->latest()->get();
+            $pengaduan = \App\Models\Pengaduan::where('user_id', $user->id)->latest()->paginate(10);
             return view('user.pengaduan.index', compact('pengaduan'));
         })->name('pengaduan.index');
         

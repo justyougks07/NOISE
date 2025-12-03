@@ -1,88 +1,104 @@
-@extends('layout')
-
-@section('title', 'Buat Pengaduan Baru')
+@extends('layouts.app')
 
 @section('content')
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h3">
-        <i class="bi bi-plus-circle me-2"></i>
-        Buat Pengaduan Baru
-    </h1>
-    <a href="{{ route('user.riwayat.index') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left me-1"></i> Kembali
-    </a>
-</div>
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <a href="{{ route('user.pengaduan.index') }}" class="text-blue-600 hover:text-blue-800 font-semibold flex items-center mb-4">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Kembali
+        </a>
+        <h1 class="text-4xl font-bold text-gray-800">Buat Pengaduan Baru</h1>
+        <p class="text-gray-600 mt-2">Sampaikan masalah Anda dengan jelas dan lengkap</p>
+    </div>
 
-<div class="card">
-    <div class="card-body">
-        <form action="{{ route('user.pengaduan.store') }}" method="POST" enctype="multipart/form-data">
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <form action="{{ route('user.pengaduan.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
-            
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="mb-3">
-                        <label for="laporan" class="form-label">Deskripsi Pengaduan <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="laporan" name="laporan" rows="8" required 
-                                  placeholder="Jelaskan masalah yang Anda alami dengan jelas dan lengkap. Contoh: Lokasi, waktu kejadian, dampak yang ditimbulkan, dll."></textarea>
-                        <small class="text-muted">Minimal 50 karakter</small>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="lokasi" class="form-label">Lokasi Kejadian</label>
-                        <input type="text" class="form-control" id="lokasi" name="lokasi" 
-                               placeholder="Contoh: Jl. Merdeka No. 10, Kelurahan Sukajadi">
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label for="foto" class="form-label">Upload Foto Bukti</label>
-                        <div class="border rounded p-3 text-center">
-                            <i class="bi bi-cloud-arrow-up fs-1 text-muted mb-3 d-block"></i>
-                            <p class="text-muted small mb-3">Drag & drop atau klik untuk upload foto</p>
-                            <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
-                            <small class="text-muted d-block mt-2">Format: JPG, PNG, maksimal 2MB</small>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="kategori" class="form-label">Kategori</label>
-                        <select class="form-select" id="kategori" name="kategori">
-                            <option value="">Pilih Kategori</option>
-                            <option value="infrastruktur">Infrastruktur</option>
-                            <option value="kebersihan">Kebersihan</option>
-                            <option value="keamanan">Keamanan</option>
-                            <option value="kesehatan">Kesehatan</option>
-                            <option value="pendidikan">Pendidikan</option>
-                            <option value="lainnya">Lainnya</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="prioritas" class="form-label">Prioritas</label>
-                        <select class="form-select" id="prioritas" name="prioritas">
-                            <option value="normal">Normal</option>
-                            <option value="tinggi">Tinggi</option>
-                            <option value="darurat">Darurat</option>
-                        </select>
-                    </div>
-                </div>
+
+            <!-- Laporan -->
+            <div>
+                <label for="laporan" class="block text-sm font-semibold text-gray-800 mb-3">
+                    Laporan Pengaduan <span class="text-red-500">*</span>
+                </label>
+                <textarea 
+                    id="laporan" 
+                    name="laporan" 
+                    rows="6"
+                    placeholder="Jelaskan masalah Anda dengan detail dan jelas. Sertakan lokasi, waktu, dan kronologi kejadian..."
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition resize-none @error('laporan') border-red-500 @enderror"
+                    required
+                >{{ old('laporan') }}</textarea>
+                @error('laporan')
+                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                @enderror
+                <p class="text-gray-500 text-sm mt-2">Minimal 20 karakter, maksimal 5000 karakter</p>
             </div>
-            
-            <div class="alert alert-info">
-                <i class="bi bi-info-circle me-2"></i>
-                Pengaduan Anda akan diproses dalam 1-3 hari kerja. Anda dapat memantau status pengaduan dan berkomunikasi dengan admin melalui fitur chat.
+
+            <!-- Foto -->
+            <div>
+                <label for="foto" class="block text-sm font-semibold text-gray-800 mb-3">
+                    Unggah Foto <span class="text-gray-500 text-sm">(Opsional)</span>
+                </label>
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition" onclick="document.getElementById('foto').click()">
+                    <svg class="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <p class="text-gray-700 font-semibold">Klik untuk unggah foto</p>
+                    <p class="text-gray-500 text-sm">atau drag dan drop di sini</p>
+                    <p class="text-gray-500 text-sm mt-2">Format: JPG, PNG (Maks: 2MB)</p>
+                </div>
+                <input 
+                    type="file" 
+                    id="foto" 
+                    name="foto" 
+                    accept="image/jpeg,image/png" 
+                    class="hidden"
+                    onchange="updateFileName(this)"
+                >
+                <p id="fileName" class="text-sm text-gray-600 mt-2"></p>
+                @error('foto')
+                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                @enderror
             </div>
-            
-            <div class="d-flex justify-content-between">
-                <button type="reset" class="btn btn-outline-secondary">
-                    <i class="bi bi-x-circle me-1"></i> Batal
-                </button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-send me-1"></i> Kirim Pengaduan
+
+            <!-- Info Tips -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h3 class="font-semibold text-blue-900 mb-2">💡 Tips untuk Pengaduan yang Baik:</h3>
+                <ul class="text-sm text-blue-800 space-y-1">
+                    <li>✓ Jelaskan masalah dengan kronologi yang jelas</li>
+                    <li>✓ Sertakan lokasi spesifik (alamat lengkap)</li>
+                    <li>✓ Lampirkan foto sebagai bukti pendukung</li>
+                    <li>✓ Tulis data yang akurat dan dapat diverifikasi</li>
+                </ul>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-4 pt-4">
+                <a href="{{ route('user.pengaduan.index') }}" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg transition text-center">
+                    Batal
+                </a>
+                <button type="submit" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition">
+                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                    Kirim Pengaduan
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+function updateFileName(input) {
+    const fileName = document.getElementById('fileName');
+    if (input.files && input.files[0]) {
+        fileName.textContent = '✓ File dipilih: ' + input.files[0].name;
+        fileName.classList.remove('text-red-500');
+        fileName.classList.add('text-green-600');
+    }
+}
+</script>
 @endsection
