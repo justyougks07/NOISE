@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +50,7 @@ Route::middleware('guest')->group(function () {
         $user = \App\Models\User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => Hash::make($request->password),
             'role' => 'user',
         ]);
         
