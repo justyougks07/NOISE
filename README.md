@@ -37,9 +37,9 @@ Sistem Informasi Pengaduan ini dirancang untuk mempermudah masyarakat dalam meny
 4. Generate App Key
    - php artisan key:generate
 5. Konfigurasi Database di file .env
-   DB_DATABASE=(nama database)
-   DB_USERNAME=root
-   DB_PASSWORD=
+   - DB_DATABASE=(nama database)
+   - DB_USERNAME=root
+   - DB_PASSWORD=
 6. Migrasi Database
    - php artisan migrate
 7. Jalankan Server
