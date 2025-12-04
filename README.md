@@ -25,6 +25,7 @@ Sistem Informasi Pengaduan ini dirancang untuk mempermudah masyarakat dalam meny
 - PHP 8+
 - MySQL
 - Blade Template
+- Laragon
 
 ## Instalasi & Setup
 1. Pull repository
