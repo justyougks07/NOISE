@@ -75,13 +75,13 @@
                                 
                                 <div class="flex items-center gap-4 text-sm text-gray-500">
                                     <span>{{ $p->created_at->format('d M Y, H:i') }}</span>
-                                    @if($p->chat->count() > 0)
+                                    @if($p->chats->count() > 0)
                                         <div class="flex items-center">
                                             <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                                 <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5z"></path>
                                                 <path d="M6 11a1 1 0 11-2 0 1 1 0 012 0zM12 11a1 1 0 11-2 0 1 1 0 012 0zM16 11a1 1 0 11-2 0 1 1 0 012 0z"></path>
                                             </svg>
-                                            {{ $p->chat->count() }} pesan
+                                            {{ $p->chats->count() }} pesan
                                         </div>
                                     @endif
                                 </div>

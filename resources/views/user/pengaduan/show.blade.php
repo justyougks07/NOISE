@@ -146,7 +146,7 @@
                     </div>
                     <div>
                         <p class="text-sm text-gray-600">Jumlah Chat</p>
-                        <p class="font-semibold text-gray-800">{{ $pengaduan->chat->count() }} pesan</p>
+                        <p class="font-semibold text-gray-800">{{ $pengaduan->chats->count() }} pesan</p>
                     </div>
                 </div>
             </div>
@@ -180,9 +180,9 @@
         </div>
 
         <div class="p-8">
-            @if($pengaduan->chat->count() > 0)
+            @if($pengaduan->chats->count() > 0)
                 <div class="space-y-4 mb-8 max-h-96 overflow-y-auto">
-                    @foreach($pengaduan->chat as $chat)
+                    @foreach($pengaduan->chats as $chat)
                         <div class="flex {{ $chat->user_id === Auth::id() ? 'justify-end' : 'justify-start' }}">
                             <div class="max-w-xs lg:max-w-md
                                 @if($chat->user_id === Auth::id()) bg-blue-600 text-white

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Auth;
@@ -60,6 +62,66 @@ Route::middleware('guest')->group(function () {
         // send the user to their dashboard.
         return redirect()->intended(route('user.dashboard'));
     });
+
+    // Forgot Password
+    Route::get('/forgot-password', function() {
+        return view('forgot-password');
+    })->name('password.request');
+
+    Route::post('/forgot-password', function(\Illuminate\Http\Request $request) {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $user = \App\Models\User::where('email', $request->email)->first();
+        
+        // Generate reset token dan simpan ke database
+        $token = \Illuminate\Support\Str::random(60);
+        
+        // Simpan token ke DB (menggunakan password reset tokens table)
+        \DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $user->email],
+            [
+                'token' => Hash::make($token),
+                'created_at' => now(),
+            ]
+        );
+
+        // Return success message (dalam real app, kirim email dengan link reset)
+        return back()->with('success', 'Instruksi reset password telah dikirim ke email Anda (cek spam folder)');
+    })->name('password.email');
+
+    // Reset Password Form
+    Route::get('/reset-password/{token}', function($token) {
+        return view('reset-password', ['token' => $token]);
+    })->name('password.reset');
+
+    Route::post('/reset-password', function(\Illuminate\Http\Request $request) {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'token' => 'required',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $resetToken = \DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->first();
+
+        if (!$resetToken || !Hash::check($request->token, $resetToken->token)) {
+            return back()->with('error', 'Token tidak valid atau sudah kadaluarsa');
+        }
+
+        // Update password user
+        $user = \App\Models\User::where('email', $request->email)->first();
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Hapus token
+        \DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        return redirect('/login')->with('success', 'Password berhasil direset. Silakan login dengan password baru Anda.');
+    })->name('password.update');
 });
 
 // ========================
@@ -221,9 +283,9 @@ Route::middleware('auth')->group(function() {
             $pending = \App\Models\Pengaduan::where('status', 'pending')->count();
             $diproses = \App\Models\Pengaduan::where('status', 'dalam pengerjaan')->count();
             $selesai = \App\Models\Pengaduan::where('status', 'selesai')->count();
-            
-          return view('admin.dashboard', compact('totalPengaduan', 'pending', 'diproses', 'selesai'));
-})->name('dashboard');
+
+        return view('admin.dashboard', compact('totalPengaduan', 'pending', 'diproses', 'selesai'));
+        })->name('dashboard');
         
         // Admin Pengaduan
         Route::get('/pengaduan', function() {
@@ -233,6 +295,8 @@ Route::middleware('auth')->group(function() {
             $pengaduan = \App\Models\Pengaduan::with('user')->latest()->get();
             return view('admin.pengaduan.index', compact('pengaduan'));
         })->name('pengaduan.index');
+
+        Route::put('/pengaduan/{id}/status', [PengaduanController::class, 'updateStatus'])->name('pengaduan.updateStatus');
 
         // Admin Pengaduan show
         Route::get('/pengaduan/{id}', function(\Illuminate\Http\Request $request, $id) {
@@ -256,6 +320,9 @@ Route::middleware('auth')->group(function() {
             return view('admin.reports.index');
         })->name('reports.index');
         
+        Route::put('/pengaduan/{id}/status',
+        [PengaduanController::class, 'updateStatus']
+        )->name('pengaduan.updateStatus');
     });
     
 });

@@ -52,7 +52,7 @@ class User extends Authenticatable
         return $this->hasMany(Pengaduan::class);
     }
 
-    public function chat()
+    public function chats()
     {
         return $this->hasMany(Chat::class);
     }

@@ -26,25 +26,40 @@ class PengaduanController extends Controller
             'status' => 'pending'
         ]);
 
-        return response()->json($pengaduan);
+        return redirect()->route('user.pengaduan.show', $pengaduan->id)->with('success', 'Pengaduan berhasil dibuat!');
     }
     
     public function index(Request $request)
-    {
-        return Pengaduan::where('user_id', $request->user()->id)->latest()->get();
+{
+    $query = Pengaduan::where('user_id', auth()->id());
+
+    if ($request->status) {
+        $query->where('status', $request->status);
     }
+
+    $pengaduan = $query->latest()->get();
+
+    return view('user.pengaduan.index', compact('pengaduan'));
+}
+
 
     public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required'
-        ]);
+{
+    $request->validate([
+        'status' => 'required|in:pending,dalam pengerjaan,selesai'  // Tambah validasi enum untuk keamanan
+    ]);
 
-        $pengaduan = Pengaduan::findOrFail($id);
-        $pengaduan->update(['status' => $request->status]);
+    $pengaduan = Pengaduan::findOrFail($id);
+    $pengaduan->update(['status' => $request->status]);
 
-        return response()->json(['message' => 'status diperbarui',]);
+    // Jika request dari web (bukan API), redirect dengan flash message
+    if (!$request->wantsJson()) {
+        return redirect()->back()->with('success', 'Status pengaduan berhasil diperbarui!');
     }
+
+    // Jika API, return JSON
+    return response()->json(['message' => 'Status diperbarui']);
+}
     public function show(Request $request, $id)
 {
     $pengaduan = Pengaduan::with('chats.user')->findOrFail($id);
