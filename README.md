@@ -31,6 +31,8 @@ Sistem Informasi Pengaduan ini dirancang untuk mempermudah masyarakat dalam meny
 1. Pull repository
    - git clone (link repository)
    - git pull
+2. Install package.js
+   - npm install
 2. Install Dependencies
    - composer install
 3. Copy Environment File
